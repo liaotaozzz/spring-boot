@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2012-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,11 @@ public class RedisProperties {
 	private String host = "localhost";
 
 	/**
+	 * Login username of the redis server.
+	 */
+	private String username;
+
+	/**
 	 * Login password of the redis server.
 	 */
 	private String password;
@@ -67,14 +72,24 @@ public class RedisProperties {
 	private boolean ssl;
 
 	/**
-	 * Connection timeout.
+	 * Read timeout.
 	 */
 	private Duration timeout;
+
+	/**
+	 * Connection timeout.
+	 */
+	private Duration connectTimeout;
 
 	/**
 	 * Client name to be set on connections with CLIENT SETNAME.
 	 */
 	private String clientName;
+
+	/**
+	 * Type of client to use. By default, auto-detected according to the classpath.
+	 */
+	private ClientType clientType;
 
 	private Sentinel sentinel;
 
@@ -106,6 +121,14 @@ public class RedisProperties {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -140,12 +163,28 @@ public class RedisProperties {
 		return this.timeout;
 	}
 
+	public Duration getConnectTimeout() {
+		return this.connectTimeout;
+	}
+
+	public void setConnectTimeout(Duration connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
+
 	public String getClientName() {
 		return this.clientName;
 	}
 
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
+	}
+
+	public ClientType getClientType() {
+		return this.clientType;
+	}
+
+	public void setClientType(ClientType clientType) {
+		this.clientType = clientType;
 	}
 
 	public Sentinel getSentinel() {
@@ -173,9 +212,32 @@ public class RedisProperties {
 	}
 
 	/**
+	 * Type of Redis client to use.
+	 */
+	public enum ClientType {
+
+		/**
+		 * Use the Lettuce redis client.
+		 */
+		LETTUCE,
+
+		/**
+		 * Use the Jedis redis client.
+		 */
+		JEDIS
+
+	}
+
+	/**
 	 * Pool properties.
 	 */
 	public static class Pool {
+
+		/**
+		 * Whether to enable the pool. Enabled automatically if "commons-pool2" is
+		 * available.
+		 */
+		private Boolean enabled;
 
 		/**
 		 * Maximum number of "idle" connections in the pool. Use a negative value to
@@ -208,6 +270,14 @@ public class RedisProperties {
 		 * object evictor thread starts, otherwise no idle object eviction is performed.
 		 */
 		private Duration timeBetweenEvictionRuns;
+
+		public Boolean getEnabled() {
+			return this.enabled;
+		}
+
+		public void setEnabled(Boolean enabled) {
+			this.enabled = enabled;
+		}
 
 		public int getMaxIdle() {
 			return this.maxIdle;
@@ -340,14 +410,10 @@ public class RedisProperties {
 		/**
 		 * Jedis pool configuration.
 		 */
-		private Pool pool;
+		private final Pool pool = new Pool();
 
 		public Pool getPool() {
 			return this.pool;
-		}
-
-		public void setPool(Pool pool) {
-			this.pool = pool;
 		}
 
 	}
@@ -365,7 +431,7 @@ public class RedisProperties {
 		/**
 		 * Lettuce pool configuration.
 		 */
-		private Pool pool;
+		private final Pool pool = new Pool();
 
 		private final Cluster cluster = new Cluster();
 
@@ -379,10 +445,6 @@ public class RedisProperties {
 
 		public Pool getPool() {
 			return this.pool;
-		}
-
-		public void setPool(Pool pool) {
-			this.pool = pool;
 		}
 
 		public Cluster getCluster() {
@@ -400,6 +462,13 @@ public class RedisProperties {
 			public static class Refresh {
 
 				/**
+				 * Whether to discover and query all cluster nodes for obtaining the
+				 * cluster topology. When set to false, only the initial seed nodes are
+				 * used as sources for topology discovery.
+				 */
+				private boolean dynamicRefreshSources = true;
+
+				/**
 				 * Cluster topology refresh period.
 				 */
 				private Duration period;
@@ -409,6 +478,14 @@ public class RedisProperties {
 				 * triggers should be used.
 				 */
 				private boolean adaptive;
+
+				public boolean isDynamicRefreshSources() {
+					return this.dynamicRefreshSources;
+				}
+
+				public void setDynamicRefreshSources(boolean dynamicRefreshSources) {
+					this.dynamicRefreshSources = dynamicRefreshSources;
+				}
 
 				public Duration getPeriod() {
 					return this.period;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright 2012-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -243,17 +243,6 @@ public abstract class EndpointDiscoverer<E extends ExposableEndpoint<O>, O exten
 	/**
 	 * Determine if an extension bean should be exposed. Subclasses can override this
 	 * method to provide additional logic.
-	 * @param extensionBean the extension bean
-	 * @return {@code true} if the extension is exposed
-	 */
-	@Deprecated
-	protected boolean isExtensionExposed(Object extensionBean) {
-		return true;
-	}
-
-	/**
-	 * Determine if an extension bean should be exposed. Subclasses can override this
-	 * method to provide additional logic.
 	 * @param extensionBeanType the extension bean type
 	 * @return {@code true} if the extension is exposed
 	 */
@@ -263,18 +252,7 @@ public abstract class EndpointDiscoverer<E extends ExposableEndpoint<O>, O exten
 
 	private boolean isEndpointExposed(EndpointBean endpointBean) {
 		return isFilterMatch(endpointBean.getFilter(), endpointBean) && !isEndpointFiltered(endpointBean)
-				&& isEndpointExposed(endpointBean.getBean());
-	}
-
-	/**
-	 * Determine if an endpoint bean should be exposed. Subclasses can override this
-	 * method to provide additional logic.
-	 * @param endpointBean the endpoint bean
-	 * @return {@code true} if the endpoint is exposed
-	 */
-	@Deprecated
-	protected boolean isEndpointExposed(Object endpointBean) {
-		return true;
+				&& isEndpointTypeExposed(endpointBean.getBeanType());
 	}
 
 	/**

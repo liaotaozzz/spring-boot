@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2012-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,11 +81,6 @@ public class BasicErrorController extends AbstractErrorController {
 		this.errorProperties = errorProperties;
 	}
 
-	@Override
-	public String getErrorPath() {
-		return null;
-	}
-
 	@RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
 	public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response) {
 		HttpStatus status = getStatus(request);
@@ -135,13 +130,11 @@ public class BasicErrorController extends AbstractErrorController {
 	 * @param produces the media type produced (or {@code MediaType.ALL})
 	 * @return if the stacktrace attribute should be included
 	 */
-	@SuppressWarnings("deprecation")
 	protected boolean isIncludeStackTrace(HttpServletRequest request, MediaType produces) {
 		switch (getErrorProperties().getIncludeStacktrace()) {
 		case ALWAYS:
 			return true;
 		case ON_PARAM:
-		case ON_TRACE_PARAM:
 			return getTraceParameter(request);
 		default:
 			return false;
@@ -172,7 +165,7 @@ public class BasicErrorController extends AbstractErrorController {
 	 * @return if the errors attribute should be included
 	 */
 	protected boolean isIncludeBindingErrors(HttpServletRequest request, MediaType produces) {
-		switch (getErrorProperties().getIncludeMessage()) {
+		switch (getErrorProperties().getIncludeBindingErrors()) {
 		case ALWAYS:
 			return true;
 		case ON_PARAM:

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2012-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import org.apache.coyote.ProtocolHandler;
 import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
@@ -72,18 +71,6 @@ class TomcatReactiveWebServerFactoryTests extends AbstractReactiveWebServerFacto
 	@Override
 	protected TomcatReactiveWebServerFactory getFactory() {
 		return new TomcatReactiveWebServerFactory(0);
-	}
-
-	@Override
-	@Test
-	@Disabled("gh-19702")
-	protected void compressionOfResponseToGetRequest() {
-	}
-
-	@Override
-	@Test
-	@Disabled("gh-19702")
-	protected void compressionOfResponseToPostRequest() {
 	}
 
 	@Test
@@ -255,7 +242,7 @@ class TomcatReactiveWebServerFactoryTests extends AbstractReactiveWebServerFacto
 	}
 
 	@Test
-	void whenServerIsShuttingDownGracefullyThenNewConnectionsCannotBeMade() throws Exception {
+	void whenServerIsShuttingDownGracefullyThenNewConnectionsCannotBeMade() {
 		TomcatReactiveWebServerFactory factory = getFactory();
 		factory.setShutdown(Shutdown.GRACEFUL);
 		BlockingHandler blockingHandler = new BlockingHandler();
